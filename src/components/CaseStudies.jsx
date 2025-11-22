@@ -21,7 +21,7 @@ const cases = [
 
 function Reveal({ children, delay = 0 }) {
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-100px' })
+  const inView = useInView(ref, { once: true, margin: '-120px' })
   const controls = useAnimation()
 
   useEffect(() => {
@@ -34,8 +34,8 @@ function Reveal({ children, delay = 0 }) {
       initial="hidden"
       animate={controls}
       variants={{
-        hidden: { opacity: 0, y: 24 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay } },
+        hidden: { opacity: 0, y: 24, filter: 'blur(4px)' },
+        visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.65, delay } },
       }}
     >
       {children}
@@ -45,7 +45,10 @@ function Reveal({ children, delay = 0 }) {
 
 export default function CaseStudies() {
   return (
-    <section className="bg-white">
+    <section className="bg-white relative">
+      {/* subtle top gradient divider */}
+      <div className="pointer-events-none absolute inset-x-0 -top-8 h-8 bg-gradient-to-b from-blue-100/40 to-transparent" />
+
       <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
         <h2 className="text-3xl md:text-4xl font-bold text-black">Case studies</h2>
         <p className="mt-2 text-black/70">Real workflows that turned interest into booked revenue.</p>
@@ -53,9 +56,14 @@ export default function CaseStudies() {
         <div className="mt-10 grid gap-6 md:grid-cols-2">
           {cases.map((c, i) => (
             <Reveal key={c.title} delay={i * 0.1}>
-              <div className="rounded-2xl border border-blue-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+              <motion.div
+                whileHover={{ y: -4 }}
+                className="relative overflow-hidden rounded-2xl border border-blue-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+              >
+                <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-blue-100/60 blur-2xl" />
+                <div className="absolute -bottom-8 -left-8 h-28 w-28 rounded-full bg-blue-200/40 blur-2xl" />
                 <h3 className="text-xl font-semibold text-black">{c.title}</h3>
-                <div className="mt-4 space-y-3">
+                <div className="mt-4 space-y-3 relative">
                   <div>
                     <p className="text-sm font-semibold text-blue-700">Problem</p>
                     <p className="text-black/80 mt-1">{c.problem}</p>
@@ -65,7 +73,7 @@ export default function CaseStudies() {
                     <p className="text-black/80 mt-1">{c.fix}</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </Reveal>
           ))}
         </div>
